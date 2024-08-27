@@ -113,14 +113,14 @@ int main(void)
   // TODO: Start TIM2 in Output Compare (OC) mode on channel 1. (Done)
   HAL_TIM_OC_Start(&htim2, TIM_CHANNEL_2);
 
-  // TODO: Start DMA in IT mode on TIM2->CH1; Source is LUT and Dest is TIM3->CCR3; start with Sine LUT
+  // TODO: Start DMA in IT mode on TIM2->CH1; Source is LUT and Dest is TIM3->CCR3; start with Sine LUT (Done)
+  HAL_DMA_Start_IT(&hdma_tim2_ch1, (uint32_t) &(Sin_LUT), DestAddress, NS);
 
+  // TODO: Write current waveform to LCD ("Sine") (Done)
+  writeLCD("Sine");
 
-  // TODO: Write current waveform to LCD ("Sine")
-  delay(3000);
-
-  // TODO: Enable DMA (start transfer from LUT to CCR)
-
+  // TODO: Enable DMA (start transfer from LUT to CCR) (Done)
+  __HAL_TIM_ENABLE_DMA(&htim2, TIM_DMA_CC1);
 
   /* USER CODE END 2 */
 
