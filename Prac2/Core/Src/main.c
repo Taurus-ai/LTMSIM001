@@ -122,6 +122,9 @@ int main(void)
   // TODO: Enable DMA (start transfer from LUT to CCR) (Done)
   __HAL_TIM_ENABLE_DMA(&htim2, TIM_DMA_CC1);
 
+      currentTick = HAL_GetTick();
+    }
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -345,8 +348,28 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void EXTI0_1_IRQHandler(void)
 {
-	// TODO: Debounce using HAL_GetTick()
+	// TODO: Debounce using HAL_GetTick() (Done)
+	if ((HAL_GetTick() - currentTick) > 6) {
+	    __HAL_TIM_DISABLE_DMA(&htim2, TIM_DMA_CC1);
+	    HAL_DMA_Abort_IT(&hdma_tim2_ch1);
 
+	    switch (count) {
+	      case 0:
+	        writeLCD("Sine");
+	        HAL_DMA_Start_IT(&hdma_tim2_ch1, (uint32_t) &(Sin_LUT), DestAddress, NS);
+	        count++;
+	        break;
+	      case 1:
+	        writeLCD("Triangle");
+	        HAL_DMA_Start_IT(&hdma_tim2_ch1, (uint32_t) &(triangle_LUT), DestAddress, NS);
+	        count++;
+	        break;
+	      case 2:
+	        writeLCD("Sawtooth");
+	        HAL_DMA_Start_IT(&hdma_tim2_ch1, (uint32_t) &(saw_LUT), DestAddress, NS);
+	        count = 0;
+	        break;
+	    }
 
 	// TODO: Disable DMA transfer and abort IT, then start DMA in IT mode with new LUT and re-enable transfer
 	// HINT: Consider using C's "switch" function to handle LUT changes
