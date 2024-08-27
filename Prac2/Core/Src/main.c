@@ -57,7 +57,7 @@ uint32_t triangle_LUT[NS] = {1023,1007,991,975,959,943,927,911,895,879,863,847,8
 
 // TODO: Equation to calculate TIM2_Ticks
 
-uint32_t TIM2_Ticks = 0; // How often to write new LUT value
+uint32_t TIM2_Ticks = (TIM2CLK/(NS*F_SIGNAL)); // How often to write new LUT value
 uint32_t DestAddress = (uint32_t) &(TIM3->CCR3); // Write LUT TO TIM3->CCR3 to modify PWM duty cycle
 /* USER CODE END PV */
 
