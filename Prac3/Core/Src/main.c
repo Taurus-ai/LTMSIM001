@@ -161,10 +161,11 @@ int main(void)
   {
 
 	// TODO: Poll ADC
-
+	uint32_t adc_value = pollADC();
 
 	// TODO: Get CRR
-  
+	uint32_t CCR = ADCtoCCR(adc_value);
+
 
   // Update PWM value
 	__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_3, CCR);
