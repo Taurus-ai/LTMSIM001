@@ -461,8 +461,22 @@ static void MX_GPIO_Init(void)
 void EXTI0_1_IRQHandler(void)
 {
 	// TODO: Add code to switch LED7 delay frequency
-	
-  
+	static uint32_t lastTick = 0;
+	uint32_t currentTick = HAL_GetTick();
+
+	// debounce by checking 200ms has passed since last button press
+	if (currentTick - lastTick < 200)
+	{
+		HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+		return;
+	}
+	lastTick = currentTick;
+
+	if (delay_t == 500)
+		delay_t = 1000; // change frequency to 1 Hz
+	else
+		delay_t = 500;  // change frequency to 2 Hz
+
 
 	HAL_GPIO_EXTI_IRQHandler(Button0_Pin); // Clear interrupt flags
 }
@@ -482,19 +496,42 @@ void TIM16_IRQHandler(void)
 	HAL_TIM_IRQHandler(&htim16);
 
 	// TODO: Initialise a string to output second line on LCD
+	char out[] = "SPI ERROR!";
 
 
 	// TODO: Change LED pattern; output 0x01 if the read SPI data is incorrect
-	
+    uint8_t valueRead = read_from_address(currentIndex);
+
+    // Check if the value read matches the expected value in our array
+    if(valueRead != array[currentIndex])
+    {
+        GPIOB->ODR = (GPIOB->ODR & 0xFF00) | 0b00000001;
+        writeLCD(out);
+    }
+    else
+    {
+        // Write the binary value to the LEDs (PB0 to PB7)
+        GPIOB->ODR = (GPIOB->ODR & 0xFF00) | valueRead;
+        writeLCD(valueRead);
+    }
+
+    // Update the current index
+    currentIndex++;
+    if(currentIndex == ARRAY_LENGTH)
+    {
+        // reset index to start of the array
+        currentIndex = 0x00;
+    }
   
 
 }
 
 // TODO: Complete the writeLCD function
 void writeLCD(char *char_in){
-  delay(3000);
-	
-  
+    delay(3000);
+	lcd_command(CLEAR);
+	lcd_putstring(char_in);
+
 }
 
 // Get ADC value
@@ -508,10 +545,11 @@ uint32_t pollADC(void){
 
 // Calculate PWM CCR value
 uint32_t ADCtoCCR(uint32_t adc_val){
-  // TODO: Calculate CCR value (val) using an appropriate equation
+	uint32_t val = (adc_val * 47999)/4095;
 
-	//return val;
+	return val;
 }
+
 
 void ADC1_COMP_IRQHandler(void)
 {
