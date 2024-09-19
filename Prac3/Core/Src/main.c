@@ -138,12 +138,25 @@ int main(void)
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3); // Start PWM on TIM3 Channel 3
 
   // TODO: Write all bytes to EEPROM using "write_to_address"
-  
+  uint16_t e_address = 0x0000;
+
+   for(uint8_t i = 0; i < ARRAY_LENGTH; i++)
+   {
+
+ 	uint8_t stored = array[i];
+ 	write_to_address(e_address, stored);
+
+ 	// Moves to the next address for the next value
+ 	e_address += sizeof(uint8_t);
+
+   }
+
   
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  uint8_t prevState = 0;
   while (1)
   {
 
