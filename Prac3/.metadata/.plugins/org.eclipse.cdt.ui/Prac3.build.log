@@ -1,0 +1,7 @@
+12:56:02 **** Incremental Build of configuration Debug for project Prac3 ****
+make -j4 all 
+make: *** No rule to make target 'C:/Users/ignor/Documents/Prac 3/2024/Prac2/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_adc.c', needed by 'Drivers/STM32F0xx_HAL_Driver/stm32f0xx_hal_adc.o'.  Stop.
+"make -j4 all" terminated with exit code 2. Build might be incomplete.
+
+12:56:03 Build Failed. 1 errors, 0 warnings. (took 719ms)
+

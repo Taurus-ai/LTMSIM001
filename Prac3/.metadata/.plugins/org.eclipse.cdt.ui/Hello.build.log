@@ -1,0 +1,45 @@
+13:06:21 **** Build of configuration Default for project Hello ****
+make all 
+mkdir build		
+arm-none-eabi-gcc -c -mcpu=cortex-m0 -mthumb   -DSTM32F051x8 -DUSE_FULL_LL_DRIVER -DHSE_VALUE=8000000 -DHSE_STARTUP_TIMEOUT=100 -DLSE_STARTUP_TIMEOUT=5000 -DLSE_VALUE=32768 -DHSI_VALUE=8000000 -DLSI_VALUE=40000 -DVDD_VALUE=3300 -DPREFETCH_ENABLE=1 -DINSTRUCTION_CACHE_ENABLE=0 -DDATA_CACHE_ENABLE=0 -ICore/Inc -IDrivers/STM32F0xx_HAL_Driver/Inc -IDrivers/CMSIS/Device/ST/STM32F0xx/Include -IDrivers/CMSIS/Include -Og -Wall -fdata-sections -ffunction-sections -g -gdwarf-2 -MMD -MP -MF"build/main.d" -Wa,-a,-ad,-alms=build/main.lst Core/Src/main.c -o build/main.o
+In file included from Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h:29,
+                 from Core/Inc/main.h:30,
+                 from Core/Src/main.c:20:
+Core/Inc/stm32f0xx_hal_conf.h:151: warning: "VDD_VALUE" redefined
+  151 | #define  VDD_VALUE                    ((uint32_t)3300) /*!< Value of VDD in mv */
+      | 
+<command-line>: note: this is the location of the previous definition
+Core/Src/main.c: In function 'main':
+Core/Src/main.c:120:3: warning: implicit declaration of function 'writeLCD' [-Wimplicit-function-declaration]
+  120 |   writeLCD("Sine");
+      |   ^~~~~~~~
+Core/Src/main.c:125:7: error: 'currentTick' undeclared (first use in this function)
+  125 |       currentTick = HAL_GetTick();
+      |       ^~~~~~~~~~~
+Core/Src/main.c:125:7: note: each undeclared identifier is reported only once for each function it appears in
+Core/Src/main.c: At top level:
+Core/Src/main.c:132:3: error: expected identifier or '(' before 'while'
+  132 |   while (1)
+      |   ^~~~~
+Core/Src/main.c:139:1: error: expected identifier or '(' before '}' token
+  139 | }
+      | ^
+Core/Src/main.c: In function 'EXTI0_1_IRQHandler':
+Core/Src/main.c:352:30: error: 'currentTick' undeclared (first use in this function)
+  352 |         if ((HAL_GetTick() - currentTick) > 6) {
+      |                              ^~~~~~~~~~~
+Core/Src/main.c:356:21: error: 'count' undeclared (first use in this function)
+  356 |             switch (count) {
+      |                     ^~~~~
+Core/Src/main.c:396:1: error: expected declaration or statement at end of input
+  396 | }
+      | ^
+At top level:
+Core/Src/main.c:387:6: warning: 'Error_Handler' defined but not used [-Wunused-function]
+  387 | void Error_Handler(void)
+      |      ^~~~~~~~~~~~~
+make: *** [Makefile:175: build/main.o] Error 1
+"make all" terminated with exit code 2. Build might be incomplete.
+
+13:06:22 Build Failed. 7 errors, 3 warnings. (took 729ms)
+
