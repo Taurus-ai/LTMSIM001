@@ -35,11 +35,51 @@ ASM_Main:
 @ TODO: Add code, labels and logic for button checks and LED patterns
 
 main_loop:
+    @ Check SW2 (PA2) - Set pattern to 0xAA if pressed
+    LDR R3, [R0]
+    LSLS R3, R3, #29
+    BCS set_pattern_aa
+    B check_sw3
+set_pattern_aa:
+    MOVS R2, #0xAA
+    B write_leds
 
+check_sw3:
+    @ Check SW3 (PA3) - Freeze pattern if pressed
+    LDR R3, [R0]
+    LSLS R3, R3, #28
+    BCS write_leds         @ If pressed, skip increment and delay
+
+    @ Check SW0 (PA0) - Increment by 2 if pressed
+    LDR R3, [R0]
+    LSLS R3, R3, #31
+    BCS increment_by_two
+    ADDS R2, R2, #1        @ Default increment by 1
+    B check_sw1
+increment_by_two:
+    ADDS R2, R2, #2
+
+    @ Ensure the counter wraps around at 256
+    UXTB R2, R2            @ Unsigned extend byte (keep only lower 8 bits)
+
+check_sw1:
+    @ Check SW1 (PA1) - Change delay if pressed
+    LDR R3, [R0]
+    LSLS R3, R3, #30
+    BCS use_short_delay
+    LDR R4, LONG_DELAY_CNT
+    B delay_loop
+use_short_delay:
+    LDR R4, SHORT_DELAY_CNT
+
+    @ Delay loop
+delay_loop:
+    SUBS R4, R4, #1
+    BNE delay_loop
 
 write_leds:
-	STR R2, [R1, #0x14]
-	B main_loop
+    STR R2, [R1, #0x14]
+    B main_loop
 
 @ LITERALS; DO NOT EDIT
 	.align
@@ -50,5 +90,5 @@ GPIOB_BASE:  		.word 0x48000400
 MODER_OUTPUT: 		.word 0x5555
 
 @ TODO: Add your own values for these delays
-LONG_DELAY_CNT: 	.word 0
-SHORT_DELAY_CNT: 	.word 0
+LONG_DELAY_CNT: 	.word 300000    @ Approximately 0.7 seconds
+SHORT_DELAY_CNT: 	.word 128571    @ Approximately 0.3 seconds
